@@ -19,7 +19,7 @@ public class WebTesterTest {
     
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("webdriver.chrome.driver", "/home/utfpr/install/selenium/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
     }
     
     @Before
@@ -36,7 +36,7 @@ public class WebTesterTest {
     
     @Test
     public void test01() {
-        Driver driver = new WebAppDriver(webDriver, "http://portal.utfpr.edu.br/", "utfpr.edu.br");       
+        Driver driver = new WebAppDriver(webDriver, "http://www.crunchyroll.com/", "crunchyroll.com");       
         //Driver driver = new WebAppDriver(webDriver, "https://www.wikipedia.org/", "wikipedia.org");   
         //Driver driver = new WebAppDriver(webDriver, "http://localhost:8080", "localhost:8080");       
         //Driver driver = new WebAppDriver(webDriver, "http://demo.redmine.org", "demo.redmine.org");       
