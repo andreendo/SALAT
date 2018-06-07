@@ -18,7 +18,7 @@ public class WebAppDriverTest {
     
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("webdriver.chrome.driver", "/home/utfpr/install/selenium/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/Users/fabriciojso/utfpr/topicos-avancados-em-teste/jars/chromedriver");
     }
     
     @Before
