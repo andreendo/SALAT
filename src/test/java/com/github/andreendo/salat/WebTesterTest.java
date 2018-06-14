@@ -48,7 +48,7 @@ public class WebTesterTest {
 //    }
     @Test
     public void test02() {
-        Driver driver = new WebAppDriver(webDriver, "http://moodle.utfpr.edu.br/", "moodle.utfpr.edu.br");
+        Driver driver = new WebAppDriver(webDriver, "http://twitter.com/", "twitter.com");
         //Driver driver = new WebAppDriver(webDriver, "https://www.wikipedia.org/", "wikipedia.org");   
         //Driver driver = new WebAppDriver(webDriver, "http://localhost:8080", "localhost:8080");       
         //Driver driver = new WebAppDriver(webDriver, "http://demo.redmine.org", "demo.redmine.org");       

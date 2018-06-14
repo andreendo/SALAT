@@ -1,7 +1,6 @@
 package com.github.andreendo.salat;
 
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -25,7 +24,7 @@ class TesterNaoRandomico {
         //while (!stopCondition.hasReached()) {
             LOGGER.info("Finding fireable events");
         int numeroEventosNa1pag = driver.getCurrentFireableEvents().size();
-        for (int i = 0; i <= numeroEventosNa1pag; i++) { 
+        for (int i = 0; i < numeroEventosNa1pag; i++) { 
             List<FireableEvent> events = driver.getCurrentFireableEvents();
             System.out.println("executa evento "+i);
 
@@ -39,7 +38,7 @@ class TesterNaoRandomico {
                 }
             } else {  //it has events to be fired
                 if (driver.execute(events.get(i))) {
-                    LOGGER.info("Select event " + (i) + " out of " + events.size());
+                    LOGGER.info("Select event " + (i) + " out of " + (events.size()-1));
                     stopCondition.update();
                     LOGGER.info("Execute event " + events.get(i).toString());
                     if (driver.isOut()) {
