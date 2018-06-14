@@ -25,7 +25,7 @@ public class FormWebAppDriverTest {
     
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "/home/josiel/Downloads/chromedriver");
     }
     
     @Before

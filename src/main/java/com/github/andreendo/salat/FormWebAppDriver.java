@@ -23,6 +23,7 @@ public class FormWebAppDriver extends WebAppDriver {
 
         //retrieve inputs
         List<WebElement> allInputs = webDriver.findElements(By.tagName("input"));
+        List<WebElement> allForms = webDriver.findElements(By.tagName("form"));
 
         //retrieve submit buttons
         List<WebElement> allSubmitButtons = webDriver.findElements(By.xpath("//input[@type='submit']"));
@@ -30,6 +31,13 @@ public class FormWebAppDriver extends WebAppDriver {
         allInputs.addAll( allSubmitButtons );
 
         for (WebElement e : allInputs) {
+            if (isVisibleExperimental(e)) {
+                FireableEvent event = new FireableEvent();
+                event.setElement(e);
+                fireableEvents.add(event);
+            }
+        }
+        for (WebElement e : allForms) {
             if (isVisibleExperimental(e)) {
                 FireableEvent event = new FireableEvent();
                 event.setElement(e);
@@ -45,6 +53,7 @@ public class FormWebAppDriver extends WebAppDriver {
         try {
             event.getElement().click();
             event.getElement().sendKeys("teste");
+            event.getElement().submit();
             return true;
         } catch (Exception e) {
             //e.printStackTrace();

@@ -41,7 +41,7 @@ public class FormAppDriver extends WebAppDriver {
         return fireableEvents;
     }
 
-    private boolean isVisibleExperimental(WebElement e) {
+    protected boolean isVisibleExperimental(WebElement e) {
         if(! isVisible(e))
             return false;
 
