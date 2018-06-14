@@ -34,6 +34,7 @@ public class AlertsAndPopup implements Driver{
     public boolean checkAlert(){
         try{
             alert = webDriver.switchTo().alert();
+            acceptAlert();
             return true;
         }catch(NoAlertPresentException ex){
             return false;

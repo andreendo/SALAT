@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -25,7 +26,7 @@ public class AlertTest {
     
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\renil\\Downloads\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\gabri\\Documents\\Selenium\\chromedriver.exe");
     }
     
     @Before
@@ -34,19 +35,19 @@ public class AlertTest {
         webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);   
         webDriver.manage().window().maximize();
     }
-    
+
     @After
     public void after() {
         webDriver.close();
     }
-    
+      
     @Test
     public void test01(){
-        Driver driver = new WebAppDriver(webDriver, "https://www.crunchyroll.com/", "crunchyroll.com");
+        Driver driver = new DriverAlert(webDriver, "http://localhost/sistema/iniciacao/", "localhost/sistema/iniciacao/");
+        
         driver.restart();
         List<FireableEvent> events = driver.getCurrentFireableEvents();
-        
-        StopCondition stopCondition = new CounterStopCondition(100);
+        StopCondition stopCondition = new CounterStopCondition(15);
         Tester tester = new Tester(driver, stopCondition, new Random());
         tester.executeRandomTest();
     }
