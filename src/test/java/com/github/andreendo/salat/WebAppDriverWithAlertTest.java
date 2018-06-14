@@ -1,11 +1,13 @@
 package com.github.andreendo.salat;
 
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +18,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
  *
  * @author fabriciojso
  */
-public class ValiandoAlertTest {
+public class WebAppDriverWithAlertTest {
     
     private WebDriver webDriver;
     
@@ -37,18 +39,12 @@ public class ValiandoAlertTest {
         webDriver.close();
     }  
     
-    @Test
-    public void testAlert() throws InterruptedException{
-  //      Driver driver = new WebAppDriver(webDriver, "http://cemieletricas.com.br/", "cemieletricas.com.br");       
-        webDriver.get( "http://cemieletricas.com.br/");
-        WebElement form = webDriver.findElement(By.id("newsletter-form"));
-        form.submit();
+     @Test
+    public void test01() {
+         Driver driver = new WebAppDriverWithAlert(webDriver, "http://cemieletricas.com.br/", "cemieletricas.com.br");       
         
-       try{
-            webDriver.switchTo().alert();
-       }catch(NoAlertPresentException exception){
-            
-       }
-
-    }
+        StopCondition stopCondition = new CounterStopCondition(200);
+        Tester tester = new Tester(driver, stopCondition, new Random());
+        tester.executeRandomTest();
+    }  
 }
