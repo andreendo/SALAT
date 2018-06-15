@@ -58,7 +58,7 @@ public class WebAppDriver implements Driver {
         return fireableEvents;
     }
 
-    private boolean isVisibleExperimental(WebElement e) {
+    protected boolean isVisibleExperimental(WebElement e) {
         if(! isVisible(e))
             return false;
         
