@@ -5,12 +5,15 @@
  */
 package com.github.andreendo.salat;
 
+import com.sun.scenario.effect.impl.state.LinearConvolveKernel;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,16 +21,23 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *
  * @author gabri
  */
-public class DriverAlert implements Driver{
+public class BugsDrive implements Driver {
+
     String startingPage;
     String urlToCheck;
     WebDriver webDriver;
-    AlertsAndPopup alerts;
+    WebElement currentElement;
+    Exception currentException;
+    static ArrayList<String> listBugs = new ArrayList<>();
 
-    public DriverAlert(WebDriver webDriver, String startingPage, String urlToCheck) {
+    public BugsDrive(WebDriver webDriver, String startingPage, String urlToCheck) {
         this.webDriver = webDriver;
         this.startingPage = startingPage;
         this.urlToCheck = urlToCheck;
+        
+        listBugs.add("--------------------------------------------------------------------------------------------------"+"\n"+
+                    "                                    RELATÓRIO DE BUGS                                             "+"\n"+
+                "--------------------------------------------------------------------------------------------------");
     }
 
     @Override
@@ -44,14 +54,14 @@ public class DriverAlert implements Driver{
 
         //retrieve links
         List<WebElement> allLinks = webDriver.findElements(By.tagName("a"));
-        
+
         //retrieve buttons
         List<WebElement> allButtons1 = webDriver.findElements(By.tagName("button"));
         List<WebElement> allButtons2 = webDriver.findElements(By.xpath("//input[@type='submit']"));
 
-        allLinks.addAll( allButtons1 );
-        allLinks.addAll( allButtons2 );
-        
+        allLinks.addAll(allButtons1);
+        allLinks.addAll(allButtons2);
+
         for (WebElement e : allLinks) {
             if (isVisibleExperimental(e)) {
                 FireableEvent event = new FireableEvent();
@@ -64,24 +74,26 @@ public class DriverAlert implements Driver{
     }
 
     private boolean isVisibleExperimental(WebElement e) {
-        if(! isVisible(e))
+        if (!isVisible(e)) {
             return false;
-        
+        }
+
         Dimension d = e.getSize();
-        if(d.getHeight() <= 0 || d.getWidth() <= 0)
+        if (d.getHeight() <= 0 || d.getWidth() <= 0) {
             return false;
-        
+        }
+
         String eStyle = e.getAttribute("style");
-        if(eStyle == null)
+        if (eStyle == null) {
             eStyle = "";
-        
-        if(eStyle.contains("display: none") || eStyle.contains("visibility: hidden"))
+        }
+
+        if (eStyle.contains("display: none") || eStyle.contains("visibility: hidden")) {
             return false;
-        
+        }
         return true;
     }
 
-    
     private boolean isVisible(WebElement e) {
         try {
             if (e.isDisplayed() && e.isEnabled()) {
@@ -89,7 +101,8 @@ public class DriverAlert implements Driver{
                 wait.until(ExpectedConditions.elementToBeClickable(e));
                 return true;
             }
-        } catch (Exception exception) {       
+        } catch (Exception exception) {
+            currentException = exception;
         }
         return false;
     }
@@ -101,17 +114,12 @@ public class DriverAlert implements Driver{
 
     @Override
     public boolean execute(FireableEvent event) {
-        alerts = new AlertsAndPopup(startingPage, urlToCheck, webDriver);
-        if(!alerts.checkAlert()){
-            try {
-                event.getElement().click();
-                return true;
-            } catch (Exception e) {
-                //e.printStackTrace();
-                return false;
-            }
-        } else {
+        try {
+            event.getElement().click();
             return true;
+        } catch (Exception e) {
+            currentException = e;
+            return false;
         }
     }
 
@@ -122,7 +130,16 @@ public class DriverAlert implements Driver{
 
     @Override
     public boolean isFaulty() {
-        //currently it does not detect faulty states
+        listBugs.add("--------------------------------------------------------------------------------------------------"+ "\n"
+                + "URL: " + webDriver.getCurrentUrl() + "\n" +
+                           "Element: " /*+ currentElement.getTagName()*/ + "\n" +
+                            "Exception: " + currentException + "\n");
         return false;
+    }
+    
+    public static void getListBugs(){
+        for(String bug : listBugs){
+            System.out.println(bug);
+        }
     }
 }
