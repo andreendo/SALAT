@@ -1,7 +1,5 @@
 package com.github.andreendo.salat;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -9,25 +7,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-/**
- *
- * @author andreendo
- */
-public class WebAppDriver implements Driver {
+import java.util.ArrayList;
+import java.util.List;
 
-    String startingPage;
-    String urlToCheck;
-    WebDriver webDriver;
-
-    public WebAppDriver(WebDriver webDriver, String startingPage, String urlToCheck) {
-        this.webDriver = webDriver;
-        this.startingPage = startingPage;
-        this.urlToCheck = urlToCheck;
-    }
-
-    @Override
-    public void restart() {
-        webDriver.get(startingPage);
+public class FormAppDriver extends WebAppDriver {
+    public FormAppDriver(WebDriver webDriver, String startingPage, String urlToCheck) {
+        super(webDriver, startingPage, urlToCheck);
     }
 
     @Override
@@ -37,17 +22,15 @@ public class WebAppDriver implements Driver {
 
         ArrayList<FireableEvent> fireableEvents = new ArrayList<>();
 
-        //retrieve links
-        List<WebElement> allLinks = webDriver.findElements(By.tagName("a"));
-        
-        //retrieve buttons
-        List<WebElement> allButtons1 = webDriver.findElements(By.tagName("button"));
-        List<WebElement> allButtons2 = webDriver.findElements(By.xpath("//input[@type='submit']"));
+        //retrieve inputs
+        List<WebElement> allInputs = webDriver.findElements(By.tagName("input"));
 
-        allLinks.addAll( allButtons1 );
-        allLinks.addAll( allButtons2 );
-        
-        for (WebElement e : allLinks) {
+        //retrieve submit buttons
+        List<WebElement> allSubmitButtons = webDriver.findElements(By.xpath("//input[@type='submit']"));
+
+        allInputs.addAll( allSubmitButtons );
+
+        for (WebElement e : allInputs) {
             if (isVisibleExperimental(e)) {
                 FireableEvent event = new FireableEvent();
                 event.setElement(e);
@@ -61,22 +44,22 @@ public class WebAppDriver implements Driver {
     protected boolean isVisibleExperimental(WebElement e) {
         if(! isVisible(e))
             return false;
-        
+
         Dimension d = e.getSize();
         if(d.getHeight() <= 0 || d.getWidth() <= 0)
             return false;
-        
+
         String eStyle = e.getAttribute("style");
         if(eStyle == null)
             eStyle = "";
-        
+
         if(eStyle.contains("display: none") || eStyle.contains("visibility: hidden"))
             return false;
-        
+
         return true;
     }
 
-    
+
     private boolean isVisible(WebElement e) {
         try {
             if (e.isDisplayed() && e.isEnabled()) {
@@ -84,15 +67,11 @@ public class WebAppDriver implements Driver {
                 wait.until(ExpectedConditions.elementToBeClickable(e));
                 return true;
             }
-        } catch (Exception exception) {       
+        } catch (Exception exception) {
         }
         return false;
     }
 
-    @Override
-    public boolean isInInitialState() {
-        return webDriver.getCurrentUrl().equals(startingPage);
-    }
 
     @Override
     public boolean execute(FireableEvent event) {
@@ -105,14 +84,5 @@ public class WebAppDriver implements Driver {
         }
     }
 
-    @Override
-    public boolean isOut() {
-        return !webDriver.getCurrentUrl().contains(urlToCheck);
-    }
 
-    @Override
-    public boolean isFaulty() {
-        //currently it does not detect faulty states
-        return false;
-    }
 }
