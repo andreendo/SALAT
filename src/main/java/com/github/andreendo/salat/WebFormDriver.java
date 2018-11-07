@@ -37,11 +37,21 @@ public class WebFormDriver extends WebAppDriver{
         ArrayList<FireableEvent> fireableEvents = new ArrayList<>();
         
         List<WebElement> allTextInputs = webDriver.findElements(By.tagName("input"));
+        List<WebElement> allWebForms = webDriver.findElements(By.tagName("form"));
         List<WebElement> allButtons2 = webDriver.findElements(By.xpath("//input[@type='submit']"));
 
         allTextInputs.addAll(allButtons2);
 
         for (WebElement e : allTextInputs) {
+            if (isVisibleExperimental(e)) {
+                FireableEvent event = new FireableEvent();
+                event.setElement(e);
+                event.setContent(e.getText());
+                fireableEvents.add(event);
+            }
+        }
+        
+        for (WebElement e : allWebForms) {
             if (isVisibleExperimental(e)) {
                 FireableEvent event = new FireableEvent();
                 event.setElement(e);
@@ -97,6 +107,8 @@ public class WebFormDriver extends WebAppDriver{
     public boolean execute(FireableEvent event) {
         try {
             event.getElement().click();
+            event.getElement().sendKeys("testandoInsercaoEmFormulario");
+            event.getElement().submit();
             return true;
         }
         catch (Exception e) {
