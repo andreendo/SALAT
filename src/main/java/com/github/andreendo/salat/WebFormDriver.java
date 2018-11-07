@@ -35,18 +35,13 @@ public class WebFormDriver extends WebAppDriver{
         JSWaiter.waitJQueryAngular();
 
         ArrayList<FireableEvent> fireableEvents = new ArrayList<>();
-
-        //retrieve links
-        List<WebElement> allLinks = webDriver.findElements(By.tagName("a"));
-
-        //retrieve buttons
-        List<WebElement> allButtons1 = webDriver.findElements(By.tagName("button"));
+        
+        List<WebElement> allTextInputs = webDriver.findElements(By.tagName("input"));
         List<WebElement> allButtons2 = webDriver.findElements(By.xpath("//input[@type='submit']"));
 
-        allLinks.addAll(allButtons1);
-        allLinks.addAll(allButtons2);
+        allTextInputs.addAll(allButtons2);
 
-        for (WebElement e : allLinks) {
+        for (WebElement e : allTextInputs) {
             if (isVisibleExperimental(e)) {
                 FireableEvent event = new FireableEvent();
                 event.setElement(e);
