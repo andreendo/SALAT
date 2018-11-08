@@ -16,14 +16,17 @@ public class WebAppDriver2 extends WebAppDriver {
         super(webDriver, startingPage, urlToCheck);
         firedEvents = new ArrayList<>();
     }
-    
+
     @Override
     public List<FireableEvent> getCurrentFireableEvents() {
         List<FireableEvent> fireableEvents = super.getCurrentFireableEvents();
-        fireableEvents.removeAll(firedEvents);
+        for (FireableEvent e : firedEvents) {
+            fireableEvents.removeIf(s -> s.getContent().equals(e.getContent()));
+        }
+        
         return fireableEvents;
     }
-    
+
     @Override
     public boolean execute(FireableEvent event) {
         firedEvents.add(event);
