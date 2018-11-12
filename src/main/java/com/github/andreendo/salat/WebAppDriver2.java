@@ -1,7 +1,9 @@
 package com.github.andreendo.salat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -10,26 +12,26 @@ import org.openqa.selenium.WebDriver;
  */
 public class WebAppDriver2 extends WebAppDriver {
 
-    private List<FireableEvent> firedEvents;
+    private Map<FireableEvent, Integer> firedEvents;
 
     public WebAppDriver2(WebDriver webDriver, String startingPage, String urlToCheck) {
         super(webDriver, startingPage, urlToCheck);
-        firedEvents = new ArrayList<>();
+        firedEvents = new HashMap<>();
     }
 
     @Override
     public List<FireableEvent> getCurrentFireableEvents() {
         List<FireableEvent> fireableEvents = super.getCurrentFireableEvents();
-        for (FireableEvent e : firedEvents) {
-            fireableEvents.removeIf(s -> s.getContent().equals(e.getContent()));
-        }
-        
+        firedEvents.forEach((event, left) -> {
+           fireableEvents.removeIf(s -> s.getContent().equals(event.getContent()) && left <= 1);
+        });
         return fireableEvents;
     }
 
     @Override
     public boolean execute(FireableEvent event) {
-        firedEvents.add(event);
-        return super.execute(event);
+        boolean res = super.execute(event);
+        if (!isOut()) firedEvents.put(event, isInInitialState() ? 0 : getCurrentFireableEvents().size());
+        return res;
     }
 }
