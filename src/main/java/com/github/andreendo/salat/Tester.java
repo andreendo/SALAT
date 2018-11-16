@@ -43,8 +43,10 @@ class Tester {
                     stopCondition.update();
                     LOGGER.info("Execute event " + events.get(randIndex).toString());
                     if(driver.isOut()) {
-                        LOGGER.info("Reach a state outside of app under test. Restarting...");
-                        driver.restart();                
+                        LOGGER.info("Reach a state outside of app under test. Vortando...");
+                        
+//                        driver.restart();                
+                        driver.goBack();                
                     }
                     else if(driver.isFaulty()) {
                         LOGGER.info("Find a bug in the app. Please check.");

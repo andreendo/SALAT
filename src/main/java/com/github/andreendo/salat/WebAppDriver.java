@@ -1,5 +1,6 @@
 package com.github.andreendo.salat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +9,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -23,6 +26,7 @@ public class WebAppDriver implements Driver {
     String startingPage;
     String urlToCheck;
     WebDriver webDriver;
+    List<String> outsideLinks = new ArrayList<>();
 
     public WebAppDriver(WebDriver webDriver, String startingPage, String urlToCheck) {
         this.webDriver = webDriver;
@@ -105,18 +109,12 @@ public class WebAppDriver implements Driver {
 
     @Override
     public boolean execute(FireableEvent event) {
-        try {
-            event.getElement().click();
-            return true;
-        } catch(WebDriverException e) {
-            JavascriptExecutor js = (JavascriptExecutor) webDriver; 
-            js.executeScript("arguments[0].click();", event.getElement());
-            return true;
+        WebElement elementClicked = event.getElement();
+        if (!elementClicked.getAttribute("href").equals("")) {
+//                && !outsideLinks.contains(elementClicked.getAttribute("href"))) {
+
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return realExecute(event);
     }
 
     @Override
@@ -130,13 +128,22 @@ public class WebAppDriver implements Driver {
             for (String w : windows) {
                 if (!w.equalsIgnoreCase(currentWindow)) {
                     webDriver.switchTo().window(w);
-                    webDriver.close();
+
+//                    webDriver.close();
                 }
             }
             webDriver.switchTo().window(currentWindow);
         }
 
         return !webDriver.getCurrentUrl().contains(urlToCheck);
+    }
+
+    public void goBack() {
+
+        outsideLinks.add(webDriver.getCurrentUrl());
+
+        webDriver.navigate().back();
+
     }
 
     @Override
@@ -150,6 +157,21 @@ public class WebAppDriver implements Driver {
             Alert alert = webDriver.switchTo().alert();
             alert.accept();
         } catch (NoAlertPresentException ex) {
+        }
+    }
+
+    private boolean realExecute(FireableEvent event) {
+
+        try {
+            event.getElement().click();
+            return true;
+        } catch (WebDriverException e) {
+            JavascriptExecutor js = (JavascriptExecutor) webDriver;
+            js.executeScript("arguments[0].click();", event.getElement());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
