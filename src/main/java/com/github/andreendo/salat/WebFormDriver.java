@@ -100,11 +100,7 @@ package com.github.andreendo.salat;
                 event.getElement().submit();
                
                 } 
-             }
-             
-             
-             
-                                          
+             }                   
      
              return true;
          }

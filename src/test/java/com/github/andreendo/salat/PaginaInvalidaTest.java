@@ -15,12 +15,25 @@ import org.junit.runners.Parameterized;
  import org.openqa.selenium.chrome.ChromeDriver;
   /**
   *
-  * @author kamillad
+  * @author kamilladallmann
   */
- 
- public class WebAlertDriverTest {
+@RunWith(Parameterized.class)
+ public class PaginaInvalidaTest {
      
-     private WebDriver webDriver;     
+     private WebDriver webDriver;    
+     
+     @Parameterized.Parameter
+    public String page;
+     @Parameterized.Parameter(1)
+    public String outCond;
+     @Parameterized.Parameter(2)
+    public int numberOfEvents;
+     @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {"file:///" + System.getProperty("user.dir") + "/src/test/resources/pages/testePagInvalida.html", ".html", 2},
+        });
+    }
     
      
      @BeforeClass
@@ -42,13 +55,11 @@ import org.junit.runners.Parameterized;
      
      @Test
      public void test01() {     
-         
-         Driver driver = new WebAlertDriver(webDriver, "C:\\Users\\kamil\\Documents\\UTFPR\\TATS\\SALAT\\src\\test\\resources\\pages\\testeAlerta.html", "testeAlerta");       
-        
-        StopCondition stopCondition = new CounterStopCondition(200);
-        Tester test = new Tester(driver, stopCondition, new Random());
-        test.executeRandomTest();
-    
+             
+         Driver driver = new WebAppDriverTeste(webDriver, page, outCond);  
+         StopCondition stopCondition = new CounterStopCondition(numberOfEvents);
+         Tester tester = new Tester(driver, stopCondition, new Random());
+         tester.executeRandomTest();
      }    
      
  } 
