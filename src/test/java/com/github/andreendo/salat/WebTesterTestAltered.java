@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -34,17 +35,25 @@ public class WebTesterTestAltered {
     public void after() {
         webDriver.close();
     }
-
+    
+    @Ignore
     @Test
     public void test01() {
-        //Driver driver = new WebAppDriver(webDriver, "http://portal.utfpr.edu.br/", "utfpr.edu.br");       
-        //Driver driver = new WebAppDriver(webDriver, "https://www.wikipedia.org/", "wikipedia.org");   
-        //Driver driver = new WebAppDriver(webDriver, "http://localhost:8080", "localhost:8080");       
-        DriverAltered driver = new WebAppDriverAltered(webDriver, "https://reactjs.org/", "reactjss.org");
-        //Driver driver = new WebAppDriver(webDriver, "http://demo.guru99.com/", "demo.guru99.com");       
+        //DriverAltered driver = new WebAppDriverAltered(webDriver, "http://www.facebook.com/", "facebook.com"); 
+        DriverAltered driver = new WebAppDriverAltered(webDriver, "https://jsfiddle.net/", "jsfiddle.net");      
+//        DriverAltered driver = new WebAppDriverAltered(webDriver, "https://reactjs.org/", "reactjss.org");
 
         StopCondition stopCondition = new CounterStopCondition(200);
         TesterAltered tester = new TesterAltered(driver, stopCondition, new Random());
         tester.executeRandomTest();
+    }
+    
+    @Test
+    public void testForm() {
+        DriverAltered driver = new WebAppDriverAltered(webDriver, "http://www.google.com/", "google.com"); 
+
+        StopCondition stopCondition = new CounterStopCondition(200);
+        TesterAltered tester = new TesterAltered(driver, stopCondition, new Random());
+        tester.executeFormTest();
     }
 }
