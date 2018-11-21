@@ -138,12 +138,7 @@ public class WebAppDriver implements Driver {
 
         return !webDriver.getCurrentUrl().contains(urlToCheck);
     }
-
-    @Override
-    public boolean isFaulty() {
-        //currently it does not detect faulty states
-        return false;
-    }
+ 
 
     private void handleAlert() {
         try {
@@ -152,4 +147,11 @@ public class WebAppDriver implements Driver {
         } catch (NoAlertPresentException ex) {
         }
     }
+          
+
+    @Override
+    public boolean isFaulty() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
