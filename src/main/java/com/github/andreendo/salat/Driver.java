@@ -19,7 +19,5 @@ public interface Driver {
     public boolean isOut();
 
     public boolean isFaulty();
-    
-    public void goBack();
-    
+
 }
