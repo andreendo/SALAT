@@ -1,5 +1,7 @@
 package com.github.andreendo.salat;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +10,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -18,13 +22,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *
  * @author andreendo
  */
-public class WebAppDriver implements Driver {
+public class WebAppDriverAltered implements DriverAltered {
 
     String startingPage;
     String urlToCheck;
     WebDriver webDriver;
+    List<String> outsideLinks = new ArrayList<>();
+    List<String> clickedLinks = new ArrayList<>();
 
-    public WebAppDriver(WebDriver webDriver, String startingPage, String urlToCheck) {
+    public WebAppDriverAltered(WebDriver webDriver, String startingPage, String urlToCheck) {
         this.webDriver = webDriver;
         this.startingPage = startingPage;
         this.urlToCheck = urlToCheck;
@@ -105,17 +111,22 @@ public class WebAppDriver implements Driver {
 
     @Override
     public boolean execute(FireableEvent event) {
-        try {
-            event.getElement().click();
-            return true;
-        } catch (WebDriverException e) {
-            JavascriptExecutor js = (JavascriptExecutor) webDriver;
-            js.executeScript("arguments[0].click();", event.getElement());
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        WebElement elementClicked = event.getElement();
+        boolean ClickedLink = clickedLinks.contains(elementClicked.getAttribute("href"));
+        boolean OutOfContextLink = clickedLinks.contains(elementClicked.getAttribute("href"));
+        if (!elementClicked.getAttribute("href").equals("")) {
+            if (ClickedLink) {
+                LOGGER.info("Link already clicked: "
+                        .concat(webDriver.getCurrentUrl()));
+                return false;
+            }
+            if (OutOfContextLink) {
+                LOGGER.info("Link points to an out of context address: "
+                        .concat(webDriver.getCurrentUrl()));
+                return false;
+            }
         }
+        return realExecute(event);
     }
 
     @Override
@@ -129,13 +140,27 @@ public class WebAppDriver implements Driver {
             for (String w : windows) {
                 if (!w.equalsIgnoreCase(currentWindow)) {
                     webDriver.switchTo().window(w);
-                    webDriver.close();
+
+//                    webDriver.close();
                 }
             }
             webDriver.switchTo().window(currentWindow);
         }
+        boolean isOut = !webDriver.getCurrentUrl().contains(urlToCheck);
+        if (isOut) {
+            outsideLinks.add(webDriver.getCurrentUrl());
+            LOGGER.info("Url out of context: ".concat(webDriver.getCurrentUrl()));
 
-        return !webDriver.getCurrentUrl().contains(urlToCheck);
+        }
+        return isOut;
+    }
+
+    public void goBack() {
+
+        outsideLinks.add(webDriver.getCurrentUrl());
+
+        webDriver.navigate().back();
+
     }
 
     @Override
@@ -149,6 +174,25 @@ public class WebAppDriver implements Driver {
             Alert alert = webDriver.switchTo().alert();
             alert.accept();
         } catch (NoAlertPresentException ex) {
+        }
+    }
+
+    private boolean realExecute(FireableEvent event) {
+
+        try {
+            String link = event.getElement().getAttribute("href");
+            event.getElement().click();
+            clickedLinks.add(link);
+            LOGGER.info(link);
+
+            return true;
+        } catch (WebDriverException e) {
+            JavascriptExecutor js = (JavascriptExecutor) webDriver;
+            js.executeScript("arguments[0].click();", event.getElement());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
