@@ -106,6 +106,8 @@ public class WebAppDriver implements Driver {
     @Override
     public boolean execute(FireableEvent event) {
         try {
+            PreencheForm preencheForm = new PreencheForm(webDriver, startingPage, urlToCheck);
+            preencheForm.preencheForms();
             event.getElement().click();
             return true;
         } catch(WebDriverException e) {
