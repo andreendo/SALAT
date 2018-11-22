@@ -1,20 +1,26 @@
 package com.github.andreendo.salat;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.github.andreendo.salat.CounterStopCondition;
+import com.github.andreendo.salat.Driver;
+import com.github.andreendo.salat.StopCondition;
+import com.github.andreendo.salat.Tester;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
-import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-/**
- *
- * @author andreendo
- */
-public class WebTesterTest {
+
+
+public class WebAlertTest {
     
     private WebDriver webDriver;
     
@@ -33,16 +39,16 @@ public class WebTesterTest {
     @After
     public void after() {
         webDriver.close();
-    }    
+    }  
     
-    @Test
-    public void testForms01() {
-        Driver driver = new WebAppDriver(webDriver,
-                "http://github.com/",
-                "github.com");
+     @Test
+    public void testAlertWeb() {
+         Driver driver = new WebAlert(webDriver,
+                 "https://www.tutorialspoint.com/javascript/javascript_dialog_boxes.htm",
+                 "tutorialspoint.com/javascript/javascript_dialog_boxes.htm");       
         
         StopCondition stopCondition = new CounterStopCondition(200);
-        Tester tester = new Tester(driver, stopCondition, new Random());
-        tester.executeRandomTest();
-    }
+        Tester test = new Tester(driver, stopCondition, new Random());
+        test.executeRandomTest();
+    }  
 }
