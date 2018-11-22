@@ -20,10 +20,6 @@ public class FireableEvent {
 
     @Override
     public String toString() {
-        return "EVENT CLICK " + element + " " + content;
-    }
-
-    void setContent(String content) {
-        this.content = content;
+        return "EVENT CLICK " + element;
     }
 }

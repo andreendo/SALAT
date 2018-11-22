@@ -19,7 +19,7 @@ public class WebAppDriverTest {
     
     @BeforeClass
     public static void beforeClass() {
-        WebDriverManager.chromedriver().setup();
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Coelho\\Downloads\\chromedriver_win32");
     }
     
     @Before
