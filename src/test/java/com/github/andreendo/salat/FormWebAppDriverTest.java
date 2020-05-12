@@ -1,20 +1,18 @@
+
 package com.github.andreendo.salat;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-/**
- *
- * @author andreendo
- */
-public class WebAppDriverTest {
+public class FormWebAppDriverTest {
+    
     private WebDriver webDriver;
     
     @BeforeClass
@@ -25,7 +23,7 @@ public class WebAppDriverTest {
     @Before
     public void before() {
         webDriver = new ChromeDriver();
-        webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);     
+        webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);   
         webDriver.manage().window().maximize();
     }
     
@@ -36,14 +34,12 @@ public class WebAppDriverTest {
     
     @Test
     public void test01() {
-        Driver driver = new WebAppDriver(webDriver, "http://localhost:8080", "localhost:8080");       
-        driver.restart();
-        List<FireableEvent> events = driver.getCurrentFireableEvents();
-        System.out.println("petclinic: " + events.size());
+        Driver driver = new FormWebAppDriver(webDriver, "http://github.com", "github.com");       
+              
         
-        driver = new WebAppDriver(webDriver, "http://portal.utfpr.edu.br/", "utfpr.edu.br");       
-        driver.restart();
-        events = driver.getCurrentFireableEvents();
-        System.out.println("portal utfpr: " + events.size());
-    }    
+        StopCondition stopCondition = new CounterStopCondition(50);
+        Tester tester = new Tester(driver, stopCondition, new Random());
+        tester.executeRandomTest();
+    }
+    
 }
